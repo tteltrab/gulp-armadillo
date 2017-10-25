@@ -1,34 +1,25 @@
 'use strict';
 
-//////////////////////////////
-// Requires
-//////////////////////////////
-var sequence = require('../helpers/sequence'),
-    armadillo = require('../helpers/armadillo'),
-    ghPages = require('gulp-gh-pages');
+const publish = require('gulp-gh-pages');
+const config = require('config');
+const sequence = require('../lib/helpers/sequence');
+const armadillo = require('../lib/helpers/armadillo');
 
-
-//////////////////////////////
-// Export
-//////////////////////////////
-module.exports = function (gulp, config) {
-  // Set value of paths to either the default or user entered
-  var DeployPaths = [
-    config.folders.output + '/**/*'
-  ];
-
-  //////////////////////////////
-  // Core Task
-  //////////////////////////////
-  gulp.task('gh-pages', function () {
-    return gulp.src(DeployPaths)
-      .pipe(ghPages({
-        'message': config.options.deployCommitMessage
-      }));
+module.exports = gulp => {
+  gulp.task('publish', 'Publishes site to GitHub Pages', () => {
+    return gulp.src(`${config.folders.output}/**/*`)
+      .pipe(publish(config.publish));
   });
 
-  gulp.task('deploy', function (cb) {
+  gulp.task('deploy:dry', 'Dry-run of deploy', cb => {
+    armadillo('Trying it out');
+
+    return sequence(config.tasks.dry, cb);
+  });
+
+  gulp.task('deploy', 'Builds and publishes site', cb => {
     armadillo('Deploying');
+
     return sequence(config.tasks.deploy, cb);
   });
-}
+};

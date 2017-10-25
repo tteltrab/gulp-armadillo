@@ -1,26 +1,24 @@
 'use strict';
 
-//////////////////////////////
+// ////////////////////////////
 // Requires
-//////////////////////////////
-var clean = require('del');
+// ////////////////////////////
+const clean = require('del');
+const config = require('config');
+const armadillo = require('../lib/helpers/armadillo');
 
-//////////////////////////////
+// ////////////////////////////
 // Export
-//////////////////////////////
-module.exports = function (gulp, config) {
-  //////////////////////////////
+// ////////////////////////////
+module.exports = gulp => {
+  // ////////////////////////////
   // Clean Server
-  //////////////////////////////
-  gulp.task('clean', function (cb) {
-    return clean([
-      config.folders.server + '/**/*'
-    ], cb);
-  });
+  // ////////////////////////////
+  gulp.task('clean', 'Cleans output folder', cb => {
+    armadillo('Cleaning');
 
-  gulp.task('clean:dist', function (cb) {
     return clean([
-      config.folders.output + '/**/*'
+      `${config.folders.output}/**/*`,
     ], cb);
   });
-}
+};
